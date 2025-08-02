@@ -91,8 +91,13 @@ class JumpDiffusionModel:
                 a, b = self.params.jump_size_params
                 jump_size = np.sum(np.random.normal(a, b, n_jumps))
                 
-                # Regime switching on jump
-                current_regime = 1 - current_regime  # Simple 2-regime switching
+                # Regime switching on jump (random transition for multi-regime)
+                n_regimes = len(self.params.volatilities)
+                if n_regimes == 2:
+                    current_regime = 1 - current_regime  # Simple 2-regime switching
+                else:
+                    # Random regime selection for multi-regime (simplified)
+                    current_regime = np.random.randint(0, n_regimes)
             
             # GBM evolution with jumps
             drift = (self.params.risk_free_rate - 0.5 * vol**2) * dt

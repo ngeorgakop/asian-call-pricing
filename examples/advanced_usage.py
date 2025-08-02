@@ -40,8 +40,8 @@ def demonstrate_regime_switching():
     regime_model = RegimeSwitchingModel(market_params, transition_matrix)
     
     # Simulate sample paths to show regime dynamics
-    n_paths = 5
-    n_steps = 252
+    n_paths = 3  # Reduced for faster demo
+    n_steps = 100  # Reduced for faster demo
     
     plt.figure(figsize=(15, 10))
     
@@ -72,7 +72,7 @@ def demonstrate_regime_switching():
     
     # Compare different volatility scenarios
     strike_price = 105.0
-    n_simulations = 20000
+    n_simulations = 3000  # Reduced for faster demo
     
     scenarios = [
         ("Low Vol", MarketParameters(100.0, 0.05, [0.15], [0.05], 1.0, 0, (0.0, 0.05))),
@@ -84,7 +84,7 @@ def demonstrate_regime_switching():
     scenario_results = []
     
     for scenario_name, params in scenarios:
-        pricer = AsianOptionPricer(params)
+        pricer = AsianOptionPricer(params, n_time_steps=50)  # Reduced for faster demo
         result = pricer.price_asian_call(
             strike=strike_price,
             n_simulations=n_simulations,
@@ -113,8 +113,8 @@ def demonstrate_regime_switching():
     
     # Variance reduction comparison
     plt.subplot(2, 3, 3)
-    pricer = AsianOptionPricer(market_params)
-    comparison_results = pricer.compare_methods(strike_price, n_simulations)
+    pricer = AsianOptionPricer(market_params, n_time_steps=50)  # Reduced for faster demo
+    comparison_results = pricer.compare_methods(strike_price, 2000)  # Reduced for faster demo
     
     methods = list(comparison_results.keys())
     prices = [comparison_results[m].option_price for m in methods]
@@ -130,13 +130,13 @@ def demonstrate_regime_switching():
     
     # Strike sensitivity analysis
     plt.subplot(2, 3, 4)
-    strikes = np.linspace(90, 120, 15)
+    strikes = np.linspace(90, 120, 8)  # Reduced for faster demo
     strike_prices = []
     
     for strike in strikes:
         result = pricer.price_asian_call(
             strike=strike,
-            n_simulations=10000,
+            n_simulations=2000,  # Reduced for faster demo
             method="control_variate_geometric"
         )
         strike_prices.append(result.option_price)
@@ -149,7 +149,7 @@ def demonstrate_regime_switching():
     
     # Time to maturity sensitivity
     plt.subplot(2, 3, 5)
-    maturities = np.linspace(0.1, 2.0, 10)
+    maturities = np.linspace(0.1, 2.0, 6)  # Reduced for faster demo
     maturity_prices = []
     
     for T in maturities:
@@ -162,10 +162,10 @@ def demonstrate_regime_switching():
             initial_regime=0,
             jump_size_params=(0.0, 0.1)
         )
-        temp_pricer = AsianOptionPricer(temp_params)
+        temp_pricer = AsianOptionPricer(temp_params, n_time_steps=50)  # Reduced for faster demo
         result = temp_pricer.price_asian_call(
             strike=strike_price,
-            n_simulations=10000,
+            n_simulations=1000,  # Reduced for faster demo
             method="monte_carlo"
         )
         maturity_prices.append(result.option_price)
@@ -178,8 +178,8 @@ def demonstrate_regime_switching():
     
     # Convergence comparison between methods
     plt.subplot(2, 3, 6)
-    max_sims = 15000
-    step = 1000
+    max_sims = 3000  # Reduced for faster demo
+    step = 300
     
     sim_counts, mc_prices = pricer.analyze_convergence(
         strike_price, max_sims, step, "arithmetic"
@@ -204,7 +204,7 @@ def demonstrate_regime_switching():
     plt.grid(True)
     
     plt.tight_layout()
-    plt.savefig('advanced_asian_analysis.png', dpi=300, bbox_inches='tight')
+    plt.savefig('plots/advanced_asian_analysis.png', dpi=300, bbox_inches='tight')
     plt.show()
     
     # Print summary statistics
@@ -243,7 +243,7 @@ def demonstrate_portfolio_pricing():
         jump_size_params=(0.0, 0.1)
     )
     
-    pricer = AsianOptionPricer(base_params)
+    pricer = AsianOptionPricer(base_params, n_time_steps=50)  # Reduced for faster demo
     
     # Define a portfolio of Asian options
     portfolio = [
@@ -259,7 +259,7 @@ def demonstrate_portfolio_pricing():
     for option in portfolio:
         result = pricer.price_asian_call(
             strike=option['strike'],
-            n_simulations=20000,
+            n_simulations=2000,  # Reduced for faster demo
             method="control_variate_geometric"
         )
         
@@ -282,4 +282,4 @@ def demonstrate_portfolio_pricing():
 if __name__ == "__main__":
     demonstrate_regime_switching()
     demonstrate_portfolio_pricing()
-    print("\nAdvanced analysis complete! Charts saved as 'advanced_asian_analysis.png'")
+    print("\nAdvanced analysis complete! Charts saved as 'plots/advanced_asian_analysis.png'")

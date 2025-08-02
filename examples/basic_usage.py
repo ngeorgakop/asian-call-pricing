@@ -26,11 +26,11 @@ def main():
     )
     
     # Initialize the pricer
-    pricer = AsianOptionPricer(market_params, n_time_steps=252)
+    pricer = AsianOptionPricer(market_params, n_time_steps=50)  # Reduced for faster demo
     
     # Option parameters
     strike_price = 105.0
-    n_simulations = 50000
+    n_simulations = 5000  # Reduced for faster demo
     
     print("Asian Call Option Pricing Example")
     print("=" * 50)
@@ -93,8 +93,8 @@ def main():
     
     sim_counts, prices = pricer.analyze_convergence(
         strike=strike_price,
-        max_simulations=20000,
-        step_size=1000
+        max_simulations=5000,  # Reduced for faster demo
+        step_size=500
     )
     
     # Plot convergence
@@ -132,7 +132,7 @@ def main():
     spot_prices = np.linspace(80, 120, 10)
     sensitivity_results = pricer.sensitivity_analysis(
         base_strike=strike_price,
-        n_simulations=10000,
+        n_simulations=2000,  # Reduced for faster demo
         parameter_ranges={"spot_price": spot_prices},
         method="monte_carlo"
     )
@@ -148,7 +148,7 @@ def main():
     volatilities = np.linspace(0.1, 0.5, 10)
     vol_sensitivity = pricer.sensitivity_analysis(
         base_strike=strike_price,
-        n_simulations=10000,
+        n_simulations=2000,  # Reduced for faster demo
         parameter_ranges={"volatility": volatilities},
         method="monte_carlo"
     )
@@ -160,10 +160,10 @@ def main():
     plt.grid(True)
     
     plt.tight_layout()
-    plt.savefig('asian_option_analysis.png', dpi=300, bbox_inches='tight')
+    plt.savefig('plots/asian_option_analysis.png', dpi=300, bbox_inches='tight')
     plt.show()
     
-    print("Analysis complete! Charts saved as 'asian_option_analysis.png'")
+    print("Analysis complete! Charts saved as 'plots/asian_option_analysis.png'")
 
 
 if __name__ == "__main__":
